@@ -76,9 +76,12 @@ def send_message(token, room_id, message):
     }
     data = {
         "roomId": room_id,
-        "text": message
+        "text": str(message)
     }
-    requests.post(url, headers=headers, data=json.dumps(data))
+    response = requests.post(url, headers=headers, data=json.dumps(data))
+    
+    if response.status_code != 200:
+        print(f"Failed to send message: {response.status_code} - {response.text}")
 
 # =========================
 # WEATHER FUNCTIONS
