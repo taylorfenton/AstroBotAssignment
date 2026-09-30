@@ -1,17 +1,9 @@
-#Contains partially completed code with sections for you to complete
-#IT IS MANDATORY TO USE THE RESOURCE PROVIDED
-#The starter code is structured into functions and modules. You are required to complete the missing sections while maintaining this modular design.  Further step by step instructions can be found in the appendix A of this assignment brief. 
-#For extended features implement it within the existing modular structure. The new feature must be triggered using a new command (e.g., /stars, /moon, /sky) and follow the same approach 
-#Use Git for version control. Maintain a repository on GitHub to track your project’s progress and changes. Ensure regular commits for each step with meaningful messages that document your step by stepdevelopment process. 
-
 # =========================
 # REQUIRED LIBRARIES
 # =========================
-
 import requests
 import json
 import time
-from datetime import datetime
 
 # =========================
 # CONFIGURATION FUNCTIONS
@@ -23,12 +15,14 @@ def get_webex_token():
         return f"Bearer {token}"
     else:
         return "Bearer YOUR_WEBEX_TOKEN"
-
+    
 def get_api_key(prompt, hardcoded_key):
-    choice = input(f"Use hard-coded {prompt}? (y/n): ").lower()
+    choice = input(f"Use hard-coded API key? (y/n): ").lower()
     if choice == "n":
-        return input(f"Enter your {prompt}: ")
-    return hardcoded_key
+        api_key = input(prompt)
+        return api_key
+    else:
+        return hardcoded_key
 
 # =========================
 # WEBEX FUNCTIONS
@@ -44,21 +38,18 @@ def get_rooms(token):
 
     return response.json().get("items", [])
 
-
 def print_rooms(rooms):
     for room in rooms:
         print(f"- {room['title']} (ID: {room['id']})")
 
-
 def select_room(rooms):
     while True:
-        name = input("What is the room name?")
+        name = input("What is the room name? ")
         for room in rooms:
             if name.lower() in room["title"].lower():
                 print(f"Successfully selected room: {room['title']}")
                 return room["id"]
         print("Room not found, Please try again.")
-
 
 def get_latest_message(token, room_id):
     url = "https://webexapis.com/v1/messages"
@@ -71,13 +62,11 @@ def get_latest_message(token, room_id):
         return None, None
 
     data = response.json().get("items", [])
-
     if not data:
         return None, None
 
     latest = data[0]
     return latest.get("id"), latest.get("text", "")
-
 
 def send_message(token, room_id, message):
     url = "https://webexapis.com/v1/messages"
@@ -92,18 +81,67 @@ def send_message(token, room_id, message):
     requests.post(url, headers=headers, data=json.dumps(data))
 
 # =========================
+# WEATHER FUNCTIONS
+# =========================
+def get_city_coordinates(city, api_key):
+    url = "https://api.openweathermap.org/geo/1.0/direct"
+    params = {"q": city, "limit": 1, "appid": api_key}
+    
+    try:
+        response = requests.get(url, params=params, timeout=10)
+        response.raise_for_status()
+        
+        data = response.json()
+        return data[0] if data else None
+        
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching coordinates: {e}")
+        return None
+
+def get_weather(city, api_key):
+    location = get_city_coordinates(city, api_key)
+
+    if not location:
+        return {"error": "City not found or network error"}
+        
+    url = "https://api.openweathermap.org/data/2.5/weather"
+    params = {
+        "lat": location["lat"],
+        "lon": location["lon"],
+        "units": "metric",
+        "appid": api_key
+    }
+    
+    try:
+        response = requests.get(url, params=params, timeout=10)
+        response.raise_for_status()
+        
+        weather = response.json()
+        
+        weather_list = weather.get("weather", [{}])
+        description = weather_list[0].get("description") if weather_list else None
+        
+        return {
+            "city": weather.get("name"),
+            "country": weather.get("sys", {}).get("country"),
+            "temperature": weather.get("main", {}).get("temp"),
+            "description": description,
+            "humidity": weather.get("main", {}).get("humidity"),
+            "wind_speed": weather.get("wind", {}).get("speed")
+        }
+        
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching weather: {e}")
+        return {"error": "Failed to fetch weather data"}
+
+# =========================
 # MAIN BOT LOGIC
 # =========================
 def main():
-
     token = get_webex_token()
-
-    weather_key = get_api_key(
-        "Weather API key",
-        "YOUR_OPENWEATHER_API_KEY"
-    )
-
     rooms = get_rooms(token)
+
+    weather_key = get_api_key("Weather API key", "a3799325cd079312f575d330710f98ef")
 
     if not rooms:
         print("No Webex rooms found. Please ensure your bot is added to a space.")
@@ -113,49 +151,46 @@ def main():
     room_id = select_room(rooms)
 
     last_message_id, _ = get_latest_message(token, room_id)
+    print("Bot is now listening for messages...")
 
     while True:
-
         message_id, message_text = get_latest_message(token, room_id)
 
         if message_id and message_id != last_message_id:
-
             last_message_id = message_id
-
             print(f"Received new message: {message_text}")
 
-            if not message_text.startswith("/"):
+            # Find the command start (ignores bot @mentions preceding the slash)
+            slash_index = message_text.find("/")
+            
+            if slash_index == -1:
                 continue
 
-            if message_text.lower() == "/help":
+            command_string = message_text[slash_index:].strip()
+            parts = command_string.split(maxsplit=1)
+            command = parts[0].lower()
+
+            if command == "/help":
                 send_message(
                     token,
                     room_id,
-                    "/weather <city>\n/iss\n/help\n/quit"
+                    "Available commands:\n- /hello\n- /help\n- /quit\n- /weather <city>"
                 )
 
-            elif message_text.lower().startswith("/weather"):
+            elif command == "/hello":
+                send_message(token, room_id, "Hello! I am receiving your messages loud and clear.")
 
-                parts = message_text.split(maxsplit=1)
+            elif command == "/getweather":
+                send_message(token, room_id, "Hello! I am receiving your messages loud and clear.")
 
-                if len(parts) < 2:
-                    send_message(token, room_id, "Usage: /weather <city>")
-                else:
-                    city = parts[1]
-                    send_message(token, room_id, get_weather(city, weather_key))
-
-            elif message_text.lower() == "/iss":
-                send_message(token, room_id, get_iss_location(weather_key))
-
-            elif message_text.lower() == "/quit":
-                send_message(token, room_id, "AstroBot shutting down.")
+            elif command == "/quit":
+                send_message(token, room_id, "Bot shutting down.")
                 break
 
             else:
-                send_message(token, room_id, "Unknown command. Use /help")
+                send_message(token, room_id, "Unknown command. Use /help to see available commands.")
 
         time.sleep(5)
-
 
 if __name__ == '__main__':
     main()
