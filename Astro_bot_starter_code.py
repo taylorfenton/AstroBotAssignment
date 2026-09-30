@@ -59,14 +59,14 @@ def get_latest_message(token, room_id):
     response = requests.get(url, headers=headers, params=params)
 
     if response.status_code != 200:
-        return None, None
+        return None, None, None # Added third None
 
     data = response.json().get("items", [])
     if not data:
-        return None, None
+        return None, None, None # Added third None
 
     latest = data[0]
-    return latest.get("id"), latest.get("text", "")
+    return latest.get("id"), latest.get("text", ""), latest.get("personEmail", "")
 
 def send_message(token, room_id, message):
     url = "https://webexapis.com/v1/messages"
@@ -150,17 +150,20 @@ def main():
     print_rooms(rooms)
     room_id = select_room(rooms)
 
-    last_message_id, _ = get_latest_message(token, room_id)
+    last_message_id, _, _ = get_latest_message(token, room_id)
     print("Bot is now listening for messages...")
 
     while True:
-        message_id, message_text = get_latest_message(token, room_id)
+        message_id, message_text, sender_email = get_latest_message(token, room_id)
 
         if message_id and message_id != last_message_id:
             last_message_id = message_id
+            
+            if sender_email and sender_email.endswith("@webex.bot"):
+                continue
+
             print(f"Received new message: {message_text}")
 
-            # Find the command start (ignores bot @mentions preceding the slash)
             slash_index = message_text.find("/")
             
             if slash_index == -1:
@@ -176,12 +179,24 @@ def main():
                     room_id,
                     "Available commands:\n- /hello\n- /help\n- /quit\n- /weather <city>"
                 )
-
             elif command == "/hello":
                 send_message(token, room_id, "Hello! I am receiving your messages loud and clear.")
 
-            elif command == "/getweather":
-                send_message(token, room_id, "Hello! I am receiving your messages loud and clear.")
+            elif command == "/weather":
+                if len(parts) > 1:
+                    city = parts[1]
+                    weather_data = get_weather(city, weather_key)
+                    
+                    if "error" in weather_data:
+                        msg = weather_data["error"]
+                    else:
+                        msg = (f"Weather in {weather_data['city']}, {weather_data['country']}: "
+                               f"{weather_data['temperature']}°C, {weather_data['description']}. "
+                               f"Humidity: {weather_data['humidity']}%, Wind: {weather_data['wind_speed']} m/s.")
+                        
+                    send_message(token, room_id, msg)
+                else:
+                    send_message(token, room_id, "Please specify a city. Usage: /weather <city>")
 
             elif command == "/quit":
                 send_message(token, room_id, "Bot shutting down.")
