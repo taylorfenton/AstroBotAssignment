@@ -59,11 +59,11 @@ def get_latest_message(token, room_id):
     response = requests.get(url, headers=headers, params=params)
 
     if response.status_code != 200:
-        return None, None, None # Added third None
+        return None, None, None 
 
     data = response.json().get("items", [])
     if not data:
-        return None, None, None # Added third None
+        return None, None, None 
 
     latest = data[0]
     return latest.get("id"), latest.get("text", ""), latest.get("personEmail", "")
