@@ -25,9 +25,9 @@ This investigation sheet helps you gather key technical information from the thr
 
 | Criteria | Details |
 |---------|---------|
-| API Base URL | `_______________________________` |
-| Endpoint for current ISS location | `_______________________________` |
-| Sample response format (example JSON) |  
+| API Base URL | `http://api.open-notify.org` |
+| Endpoint for current ISS location | `/iss-now.json` |
+| Sample response format | `"message": "success", "timestamp": 1791363823, "iss_position": {"longitude": "150.7680", "latitude": "-22.6111" ` |  
 ```
 
 ```
@@ -40,13 +40,13 @@ This investigation sheet helps you gather key technical information from the thr
 | Criteria | Details |
 |---------|---------|
 | Provider used (Choose one) | **LocationIQ / Mapbox/ OpenWeatherMap other -provide detail** |
-| API Base URL | `_______________________________` |
-| Endpoint for geocoding | `_______________________________` |
-| Endpoint for reverse geocoding | `_______________________________` |
-| Authentication method | `_______________________________` |
-| Required query parameters | `_______________________________` |
-| Sample request with latitude/longitude | `_______________________________` |
-| Sample JSON response (formatted example) |  
+| API Base URL | `http://api.openweathermap.org/geo/1.0/direct` |
+| Endpoint for geocoding | `direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}` |
+| Endpoint for reverse geocoding | `reverse?lat={lat}&lon={lon}&limit={limit}&appid={API key}` |
+| Authentication method | `API Key passed as appid query parameter` |
+| Required query parameters | `q, appid, limit` |
+| Sample request with latitude/longitude | `http://api.openweathermap.org/geo/1.0/reverse?lat=51.5098&lon=-0.1180&limit=5&appid={API key}` |
+| Sample JSON response (formatted example) | `"name":"City of Westminster","local_names":{"be":"Вэстмінстэр","ru":"Вестминстер","fr":"Cité de Westminster","cy":"San Steffan","ko":"시티오브웨스트민스터","he":"וסטמינסטר","en":"City of Westminster","mk":"Град Вестминстер"},"lat":51.4973206,"lon":-0.137149,"country":"GB","state":"England" ` | 
 ```
 
 ```
@@ -63,7 +63,7 @@ This investigation sheet helps you gather key technical information from the thr
 | API Base URL | `https://api.openweathermap.org/geo/1.0/direct` |
 | Endpoint for current weather | `weather` |
 | Authentication method | `API Key passed in via appId` |
-| Required query parameters | `lat, lon, appId, units` |
+| Required query parameters | `lat, lon, appid, units` |
 | Sample JSON response (formatted example) | `"weather": [{"description": "clear sky"}], "main": {"temp": 22.5, "humidity": 45}, "wind": {"speed": 3.1}, "sys": {"country": "GB"}, "name": "London"` | 
 ```
 
@@ -76,13 +76,13 @@ This investigation sheet helps you gather key technical information from the thr
 
 | Criteria | Details |
 |---------|---------|
-| Library used | `_______________________________` |
-| Function used to convert epoch | `_______________________________` |
-| Sample code to convert timestamp |  
+| Library used | `time` |
+| Function used to convert epoch | `time.ctime()` | 
+| Sample code to convert timestamp | `import time - print(time.ctime(1789639219))` | 
 ```  
 ```
 |
-| Output (human-readable time) | `_______________________________` |
+| Output (human-readable time) | `Fri Sept 18 11:00:19 2026` |
 
 ---
 
