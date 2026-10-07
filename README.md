@@ -64,13 +64,7 @@ This investigation sheet helps you gather key technical information from the thr
 | Endpoint for current weather | `weather` |
 | Authentication method | `API Key passed in via appId` |
 | Required query parameters | `lat, lon, appId, units` |
-| Sample JSON response (formatted example) | `{
-  "weather": [{"description": "clear sky"}],
-  "main": {"temp": 22.5, "humidity": 45},
-  "wind": {"speed": 3.1},
-  "sys": {"country": "GB"},
-  "name": "London"
-}' | 
+| Sample JSON response (formatted example) | `"weather": [{"description": "clear sky"}], "main": {"temp": 22.5, "humidity": 45}, "wind": {"speed": 3.1}, "sys": {"country": "GB"}, "name": "London"` | 
 ```
 
 ```
