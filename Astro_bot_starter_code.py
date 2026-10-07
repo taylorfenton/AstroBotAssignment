@@ -136,6 +136,48 @@ def get_weather(city, api_key):
     except requests.exceptions.RequestException as e:
         print(f"Error fetching weather: {e}")
         return {"error": "Failed to fetch weather data"}
+    
+# =========================
+# ISS FUNCTIONS
+# =========================
+def reverse_geocode(lat, lon, api_key):
+    url = "http://api.openweathermap.org/geo/1.0/reverse"
+    params = {
+        "lat": lat,
+        "lon": lon,
+        "limit": 1,
+        "appid": api_key
+    }
+    
+    try:
+        response = requests.get(url, params=params, timeout=10)
+        response.raise_for_status()
+        
+        data = response.json()
+        
+        return data[0] if data else None
+        
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching reverse geocode: {e}")
+        return None
+
+def get_iss_location(api_key):
+    url = "http://api.open-notify.org/iss-now.json"
+    response = requests.get(url)
+    if response.status_code != 200:
+        return None
+    data = response.json()
+    lat = data["iss_position"]["latitude"]
+    lon = data["iss_position"]["longitude"]
+    location = reverse_geocode(lat, lon, api_key)
+    place = "Over Ocean / No Nearby City"
+    if location:
+        place = location.get("name", "Unknown")
+    return (
+        lat,
+        lon,
+        place
+    )
 
 # =========================
 # MAIN BOT LOGIC
@@ -180,7 +222,7 @@ def main():
                 send_message(
                     token,
                     room_id,
-                    "Available commands:\n- /hello\n- /help\n- /quit\n- /weather <city>"
+                    "Available commands:\n- /hello\n- /help\n- /quit\n- /weather <city>\n- /locate <city> OR <lat> <lon>\n- /iss"
                 )
             elif command == "/hello":
                 send_message(token, room_id, "Hello! I am receiving your messages loud and clear.")
@@ -200,6 +242,56 @@ def main():
                     send_message(token, room_id, msg)
                 else:
                     send_message(token, room_id, "Please specify a city. Usage: /weather <city>")
+            
+            elif command == "/iss":
+                iss_location = get_iss_location(weather_key)
+                if iss_location:
+                    lat, lon, place = iss_location
+                    msg = (f"Current ISS Location:\n"
+                           f"Latitude: {lat}\n"
+                           f"Longitude: {lon}\n"
+                           f"Place: {place}")
+                else:
+                    msg = "Could not retrieve ISS location."
+
+                send_message(token, room_id, msg)
+
+            elif command == "/locate":
+                if len(parts) > 1:
+                    query = parts[1].strip()
+                    query_parts = query.split()
+                    
+                    is_coords = False
+                    if len(query_parts) == 2:
+                        try:
+                            lat = float(query_parts[0])
+                            lon = float(query_parts[1])
+                            is_coords = True
+                        except ValueError:
+                            pass
+                    
+                    if is_coords:
+                        location = reverse_geocode(lat, lon, weather_key)
+                        if location:
+                            state = f", {location['state']}" if "state" in location else ""
+                            country = location.get("country", "")
+                            msg = f"The location for {lat}, {lon} is {location['name']}{state}, {country}."
+                        else:
+                            msg = f"Could not find a place for coordinates {lat}, {lon} (might be over the ocean)."
+                    else:
+                        location = get_city_coordinates(query, weather_key)
+                        if location:
+                            state = f", {location['state']}" if "state" in location else ""
+                            country = location.get("country", "")
+                            msg = (f"Coordinates for {location['name']}{state}, {country}:\n"
+                                   f"Latitude: {location['lat']}\n"
+                                   f"Longitude: {location['lon']}")
+                        else:
+                            msg = f"Could not find coordinates for '{query}'."
+                            
+                    send_message(token, room_id, msg)
+                else:
+                    send_message(token, room_id, "Usage: /locate <city> OR /locate <lat> <lon>")
 
             elif command == "/quit":
                 send_message(token, room_id, "Bot shutting down.")
