@@ -11,13 +11,13 @@ This investigation sheet helps you gather key technical information from the thr
 
 | Criteria | Details |
 |---------|---------|
-| API Base URL | `_______________________________` |
-| Authentication Method | `_______________________________` |
-| Endpoint to list rooms | `_______________________________` |
-| Endpoint to get messages | `_______________________________` |
-| Endpoint to send message | `_______________________________` |
-| Required headers | `_______________________________` |
-| Sample full GET or POST request | `_______________________________` |
+| API Base URL | `https://webexapis.com/v1/rooms` |
+| Authentication Method | `GET` |
+| Endpoint to list rooms | `GET /rooms` |
+| Endpoint to get messages | `GET /messages?roomId={roomId}&max=1` |
+| Endpoint to send message | `POST /messages` |
+| Required headers | `"Authorization": "Bearer {token}", "Content-Type": "application/json"` |
+| Sample full GET or POST request | `requests.post("[https://webexapis.com/v1/messages](https://webexapis.com/v1/messages)", headers={"Authorization": token, "Content-Type": "application/json"}, data=json.dumps({"roomId": room_id, "text": message}))` |
 
 ---
 
@@ -59,12 +59,18 @@ This investigation sheet helps you gather key technical information from the thr
 
 | Criteria | Details |
 |---------|---------|
-| API Provider (Choose one) | **OpenWeather, OpenWeatherMap (or other – provide details)** |
-| API Base URL | `_______________________________` |
-| Endpoint for current weather | `_______________________________` |
-| Authentication method | `_______________________________` |
-| Required query parameters | `_______________________________` |
-| Sample JSON response (formatted example) |  
+| API Provider | 'OpenWeather' |
+| API Base URL | `https://api.openweathermap.org/geo/1.0/direct` |
+| Endpoint for current weather | `weather` |
+| Authentication method | `API Key passed in via appId` |
+| Required query parameters | `lat, lon, appId, units` |
+| Sample JSON response (formatted example) | `{
+  "weather": [{"description": "clear sky"}],
+  "main": {"temp": 22.5, "humidity": 45},
+  "wind": {"speed": 3.1},
+  "sys": {"country": "GB"},
+  "name": "London"
+}' | 
 ```
 
 ```
