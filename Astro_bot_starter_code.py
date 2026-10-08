@@ -4,6 +4,7 @@
 import requests
 import json
 import time
+from datetime import datetime
 
 # =========================
 # CONFIGURATION FUNCTIONS
@@ -77,6 +78,22 @@ def send_message(token, room_id, message):
     data = {
         "roomId": room_id,
         "text": str(message)
+    }
+    response = requests.post(url, headers=headers, data=json.dumps(data))
+    
+    if response.status_code != 200:
+        print(f"Failed to send message: {response.status_code} - {response.text}")
+
+def send_message_files(token, room_id, message, file_url):
+    url = "https://webexapis.com/v1/messages"
+    headers = {
+        "Authorization": token, 
+        "Content-Type": "application/json"
+    }
+    data = {
+        "roomId": room_id,
+        "text": str(message),
+        "files" : [file_url]
     }
     response = requests.post(url, headers=headers, data=json.dumps(data))
     
@@ -180,6 +197,41 @@ def get_iss_location(api_key):
     )
 
 # =========================
+# Extended API FUNCTIONS
+# =========================
+def get_random_fact():
+    url = "https://uselessfacts.jsph.pl/api/v2/facts/random"
+    
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        
+        data = response.json()
+        return data if data else None
+        
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching random fact: {e}")
+        return None
+
+def get_apod():
+    date_string = datetime.now().strftime("%Y-%m-%d")
+
+    url = "https://science.nasa.gov/wp-json/wp/v2/apod-basic/"
+    params = {
+        "data": date_string
+    }
+    
+    try:
+        response = requests.get(url, params=params, timeout=10)
+        response.raise_for_status()
+        
+        data = response.json()
+        return data[0] if data else None
+        
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching Astronomy Picture of the Day: {e}")
+        return None
+# =========================
 # MAIN BOT LOGIC
 # =========================
 def main():
@@ -187,6 +239,7 @@ def main():
     rooms = get_rooms(token)
 
     weather_key = get_api_key("Weather API key", "a3799325cd079312f575d330710f98ef")
+    nasa_key = get_api_key("NASA API key", "TSrLl9s28LPL4I5Qs0hN4WH9ksGdooIiW1HaansC")
 
     if not rooms:
         print("No Webex rooms found. Please ensure your bot is added to a space.")
@@ -292,6 +345,25 @@ def main():
                     send_message(token, room_id, msg)
                 else:
                     send_message(token, room_id, "Usage: /locate <city> OR /locate <lat> <lon>")
+
+            elif command == "/fact":
+                fact = get_random_fact()
+                if fact:
+                    send_message(token, room_id, f"Random Fact: {fact['text']}")
+                else:
+                    send_message(token, room_id, "Could not retrieve a random fact.")
+            
+            elif command == "/apod":
+                apod = get_apod()
+                if apod:
+                    msg = (f"**Astronomy Picture of the Day**\n"
+                           f"Title: {apod['title']}\n"
+                           f"Date: {apod['date']}\n"
+                        )
+                else:
+                    msg = "Could not retrieve Astronomy Picture of the Day."
+
+                send_message_files(token, room_id, msg, apod['hdurl'] if apod else None)
 
             elif command == "/quit":
                 send_message(token, room_id, "Bot shutting down.")

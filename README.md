@@ -12,7 +12,7 @@ This investigation sheet helps you gather key technical information from the thr
 | Criteria | Details |
 |---------|---------|
 | API Base URL | `https://webexapis.com/v1/rooms` |
-| Authentication Method | `GET` |
+| Authentication Method | `API Key` |
 | Endpoint to list rooms | `GET /rooms` |
 | Endpoint to get messages | `GET /messages?roomId={roomId}&max=1` |
 | Endpoint to send message | `POST /messages` |
@@ -86,16 +86,33 @@ This investigation sheet helps you gather key technical information from the thr
 
 ---
 
-##  Extended Feature API ( 3 marks)
+##  Extended Feature API V1 ( 3 marks)
 
 | Criteria | Details |
 |---------|---------|
-| API Provider | '_________' |
-| API Base URL | `_______________________________` |
-| Endpoint | `_______________________________` |
-| Authentication method | `_______________________________` |
-| Required query parameters | `_______________________________` |
-| Sample JSON response (formatted example) |  
+| API Provider | 'uselessfacts' |
+| API Base URL | `https://uselessfacts.jsph.pl` |
+| Endpoint | `api/v2/facts/random` |
+| Authentication method | `Json, no key` |
+| Required query parameters | `none` |
+| Sample JSON response (formatted example) | `"id":"6edb5c2eb67ca5a7b00eedb270804dbf","text":"Like fingerprints, everyone's tongue print is different!","source":"djtech.net","source_url":"https://www.djtech.net/humor/shorty_useless_facts.htm","language":"en","permalink":"https://uselessfacts.jsph.pl/api/v2/facts/6edb5c2eb67ca5a7b00eedb270804dbf"` | 
+```
+
+```
+|
+
+--- 
+
+##  Extended Feature API V2 ( 3 marks)
+
+| Criteria | Details |
+|---------|---------|
+| API Provider | ' NASA ' |
+| API Base URL | `https://api.nasa.gov/` |
+| Endpoint | `planetary/apod` |
+| Authentication method | `API Key` |
+| Required query parameters | `hdurl, explanation` |
+| Sample JSON response (formatted example) | `"date":"2026-10-07","explanation":"\"Happy New Year!\" No, wait, this is not a fireworks display. This image shows Nebula Pa 30, observed with the Gemini North Telescope in Hawai'i. It is likely the remnant of an old supernova explosion: separate historical records by Chinese, Japanese and Arabic astronomers tell of a \"guest star\" that appeared in the sky for 185 days in the year 1181. It is believed that this bright new point of light came from the supernova that caused the fireworks in Pa 30. Astronomers don't know exactly what happened in this unusual explosion, classified as a Type Iax supernova, but it is thought to be caused by the merger of two white dwarfs. The mysterious central star in the image is extremely hot and produces a strong wind, possibly forming the radial filaments. Look closely at them: those pearl-like knots stringing the filaments are 4 light-days in diameter. Understanding how a supernova created this amazing nebula continues an 845-year old mystery (and counting).Tomorrow's picture: sm\u00f6rg\u00e5sbord\t\t\t\t\t\t","hdurl":"https://science.nasa.gov/wp-content/themes/nasa-child/assets/images/nasa-logo@2x.png","media_type":"image","service_version":"v1","title":"NASA Science","url":"https://science.nasa.gov/wp-content/themes/nasa-child/assets/images/nasa-logo@2x.png"` | 
 ```
 
 ```
