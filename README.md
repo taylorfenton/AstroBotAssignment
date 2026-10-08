@@ -27,11 +27,7 @@ This investigation sheet helps you gather key technical information from the thr
 |---------|---------|
 | API Base URL | `http://api.open-notify.org` |
 | Endpoint for current ISS location | `/iss-now.json` |
-| Sample response format | `"message": "success", "timestamp": 1791363823, "iss_position": {"longitude": "150.7680", "latitude": "-22.6111" ` |  
-```
-
-```
-|
+| Sample response format | `"message": "success", "timestamp": 1791363823, "iss_position": {"longitude": "150.7680", "latitude": "-22.6111" ` | 
 
 ---
 
@@ -47,10 +43,6 @@ This investigation sheet helps you gather key technical information from the thr
 | Required query parameters | `q, appid, limit` |
 | Sample request with latitude/longitude | `http://api.openweathermap.org/geo/1.0/reverse?lat=51.5098&lon=-0.1180&limit=5&appid={API key}` |
 | Sample JSON response (formatted example) | `"name":"City of Westminster","local_names":{"be":"Вэстмінстэр","ru":"Вестминстер","fr":"Cité de Westminster","cy":"San Steffan","ko":"시티오브웨스트민스터","he":"וסטמינסטר","en":"City of Westminster","mk":"Град Вестминстер"},"lat":51.4973206,"lon":-0.137149,"country":"GB","state":"England" ` | 
-```
-
-```
-|
 
 ---
 
@@ -65,10 +57,6 @@ This investigation sheet helps you gather key technical information from the thr
 | Authentication method | `API Key passed in via appId` |
 | Required query parameters | `lat, lon, appid, units` |
 | Sample JSON response (formatted example) | `"weather": [{"description": "clear sky"}], "main": {"temp": 22.5, "humidity": 45}, "wind": {"speed": 3.1}, "sys": {"country": "GB"}, "name": "London"` | 
-```
-
-```
-|
 
 ---
 
@@ -79,9 +67,6 @@ This investigation sheet helps you gather key technical information from the thr
 | Library used | `time` |
 | Function used to convert epoch | `time.ctime()` | 
 | Sample code to convert timestamp | `import time - print(time.ctime(1789639219))` | 
-```  
-```
-|
 | Output (human-readable time) | `Fri Sept 18 11:00:19 2026` |
 
 ---
@@ -96,10 +81,6 @@ This investigation sheet helps you gather key technical information from the thr
 | Authentication method | `Json, no key` |
 | Required query parameters | `none` |
 | Sample JSON response (formatted example) | `"id":"6edb5c2eb67ca5a7b00eedb270804dbf","text":"Like fingerprints, everyone's tongue print is different!","source":"djtech.net","source_url":"https://www.djtech.net/humor/shorty_useless_facts.htm","language":"en","permalink":"https://uselessfacts.jsph.pl/api/v2/facts/6edb5c2eb67ca5a7b00eedb270804dbf"` | 
-```
-
-```
-|
 
 --- 
 
@@ -113,10 +94,6 @@ This investigation sheet helps you gather key technical information from the thr
 | Authentication method | `API Key` |
 | Required query parameters | `hdurl, explanation` |
 | Sample JSON response (formatted example) | `"date":"2026-10-07","explanation":"\"Happy New Year!\" No, wait, this is not a fireworks display. This image shows Nebula Pa 30, observed with the Gemini North Telescope in Hawai'i. It is likely the remnant of an old supernova explosion: separate historical records by Chinese, Japanese and Arabic astronomers tell of a \"guest star\" that appeared in the sky for 185 days in the year 1181. It is believed that this bright new point of light came from the supernova that caused the fireworks in Pa 30. Astronomers don't know exactly what happened in this unusual explosion, classified as a Type Iax supernova, but it is thought to be caused by the merger of two white dwarfs. The mysterious central star in the image is extremely hot and produces a strong wind, possibly forming the radial filaments. Look closely at them: those pearl-like knots stringing the filaments are 4 light-days in diameter. Understanding how a supernova created this amazing nebula continues an 845-year old mystery (and counting).Tomorrow's picture: sm\u00f6rg\u00e5sbord\t\t\t\t\t\t","hdurl":"https://science.nasa.gov/wp-content/themes/nasa-child/assets/images/nasa-logo@2x.png","media_type":"image","service_version":"v1","title":"NASA Science","url":"https://science.nasa.gov/wp-content/themes/nasa-child/assets/images/nasa-logo@2x.png"` | 
-```
-
-```
-|
 
 --- 
 
