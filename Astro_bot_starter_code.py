@@ -4,7 +4,7 @@
 import requests
 import json
 import time
-from datetime import datetime
+import datetime
 
 # =========================
 # CONFIGURATION FUNCTIONS
@@ -186,6 +186,8 @@ def get_iss_location(api_key):
     data = response.json()
     lat = data["iss_position"]["latitude"]
     lon = data["iss_position"]["longitude"]
+    timestamp = data["timestamp"]
+    usable_time = datetime.datetime.fromtimestamp(timestamp).strftime('%d-%m-%Y %H:%M:%S')
     location = reverse_geocode(lat, lon, api_key)
     place = "Over Ocean / No Nearby City"
     if location:
@@ -193,7 +195,8 @@ def get_iss_location(api_key):
     return (
         lat,
         lon,
-        place
+        place,
+        usable_time
     )
 
 # =========================
@@ -214,7 +217,7 @@ def get_random_fact():
         return None
 
 def get_apod():
-    date_string = datetime.now().strftime("%Y-%m-%d")
+    date_string = datetime.now().strftime("%d-%m-%Y")
 
     url = "https://science.nasa.gov/wp-json/wp/v2/apod-basic/"
     params = {
@@ -299,11 +302,12 @@ def main():
             elif command == "/iss":
                 iss_location = get_iss_location(weather_key)
                 if iss_location:
-                    lat, lon, place = iss_location
+                    lat, lon, place, usable_time = iss_location
                     msg = (f"Current ISS Location:\n"
                            f"Latitude: {lat}\n"
                            f"Longitude: {lon}\n"
-                           f"Place: {place}")
+                           f"Place: {place}\n"
+                           f"Time: {usable_time}")
                 else:
                     msg = "Could not retrieve ISS location."
 
