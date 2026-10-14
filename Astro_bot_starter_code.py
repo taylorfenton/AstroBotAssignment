@@ -5,6 +5,7 @@ import requests
 import json
 import time
 import datetime
+from datetime import datetime
 
 # =========================
 # CONFIGURATION FUNCTIONS
@@ -242,7 +243,6 @@ def main():
     rooms = get_rooms(token)
 
     weather_key = get_api_key("Weather API key", "a3799325cd079312f575d330710f98ef")
-    nasa_key = get_api_key("NASA API key", "TSrLl9s28LPL4I5Qs0hN4WH9ksGdooIiW1HaansC")
 
     if not rooms:
         print("No Webex rooms found. Please ensure your bot is added to a space.")
@@ -278,7 +278,7 @@ def main():
                 send_message(
                     token,
                     room_id,
-                    "Available commands:\n- /hello\n- /help\n- /quit\n- /weather <city>\n- /locate <city> OR <lat> <lon>\n- /iss"
+                    "Available commands:\n- /hello\n- /help\n- /quit\n- /weather <city>\n- /locate <city> OR <lat> <lon>\n- /iss\n- /apod"
                 )
             elif command == "/hello":
                 send_message(token, room_id, "Hello! I am receiving your messages loud and clear.")
@@ -360,7 +360,7 @@ def main():
             elif command == "/apod":
                 apod = get_apod()
                 if apod:
-                    msg = (f"**Astronomy Picture of the Day**\n"
+                    msg = (f"Astronomy Picture of the Day\n"
                            f"Title: {apod['title']}\n"
                            f"Date: {apod['date']}\n"
                         )
