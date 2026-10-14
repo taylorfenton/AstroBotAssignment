@@ -64,9 +64,9 @@ This investigation sheet helps you gather key technical information from the thr
 
 | Criteria | Details |
 |---------|---------|
-| Library used | `time` |
-| Function used to convert epoch | `time.ctime()` | 
-| Sample code to convert timestamp | `import time - print(time.ctime(1789639219))` | 
+| Library used | `datetime` |
+| Function used to convert epoch | `.fromtimestamp(timestamp).strftime('%d-%m-%Y %H:%M:%S')` | 
+| Sample code to convert timestamp | `import time - print(usable_time(timestamp))` | 
 | Output (human-readable time) | `Fri Sept 18 11:00:19 2026` |
 
 ---
@@ -107,8 +107,10 @@ In this section, evaluate how web technologies, architecture, and design pattern
 
 Explain how the client–server model applies to your AstroBot:
 
-- Identify the **client** 
-- Identify the **server(s)** 
+- Identify the **client**:
+  The client here would be Webex's messaging service as thats where inputs are pushed and outputs recieved.
+- Identify the **server(s)**
+  The servers include the Webex API servers, OpenWeatherMap servers, Open-Notify (ISS) servers, uselessfacts.jsph.pl, and NASA's Science API servers.
 - Describe how data flows between:
   - User, AstroBot and APIs
 
