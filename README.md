@@ -108,44 +108,53 @@ In this section, evaluate how web technologies, architecture, and design pattern
 Explain how the client–server model applies to your AstroBot:
 
 - Identify the **client**:
-  The client here would be Webex's messaging service as thats where inputs are pushed and outputs recieved.
+
+The Python script acts as the primary client. The end-user's Webex application also acts as a client interfacing with the Webex servers.
+
 - Identify the **server(s)**
-  The servers include the Webex API servers, OpenWeatherMap servers, Open-Notify (ISS) servers, uselessfacts.jsph.pl, and NASA's Science API servers.
+
+The servers include the Webex API servers, OpenWeatherMap servers, Open-Notify (ISS) servers, uselessfacts.jsph.pl, and NASA's Science API servers.
+
 - Describe how data flows between:
   - User, AstroBot and APIs
 
-Include a **simple block diagram** to illustrate this interaction.
+1. First the user enters a command (e.g., `/weather <city>`)
+2. Program (Client) polls the WebexAPI to get the latest message
+3. The bot processes the command given, and goes at fetches the data from the relevant API. In this case, the OpenWeather API.
+4. Weather API respoonds with JSON data to the bot.
+5. Bot formats given data and then sends a `POST` request back the WebexAPI which then delivers the data in human-readable form on the messeaging client.
+
+**Simple block diagram here**
 
 ####  Security Considerations: (3 marks )
-- Consider but not limiting to secure handling of API keys and tokens, API rate limiting, and Input validation (e.g., handling user commands safely), include examples from code where necessary to illustrate.
+- **API Keys and Tokens:** The bot uses prompts via `input()` to allow users to inject their Webex tokens and API keys at runtime, instead of hardcoding them directly into the script.
 
+- **API Rate Limiting:** To prevent spamming the Webex API and encountering rate limits, the bot loop includes a `sleep()` delay between request attempts.
+
+- **Input Validation:** The bot splits command strings using parts = command_string.split(maxsplit=1) and validates array lengths (e.g., `if len(parts) > 1:`) before attempting to process user arguments like city names. This gives an easy way to look at each section of the users command and act accordingly.
 ---
 
 ###  RESTful API Usage in Your Application (3 marks )
 
-Explain how REST APIs are used in your AstroBot: 
+- **HTTP Methods:** The bot mostly uses GET requests to retrieve information, such as fetching Webex rooms, polling for messages, and requesting external data from the Weather, ISS, and other APIs. POST requests are strictly used to create resources, specifically sending new messages to Webex rooms.
 
-- Describe how HTTP methods (GET, POST) are used  
-- Explain how your bot interacts with APIs (Webex, Weather, ISS, Geocoding)  
-- Describe how JSON responses are received and processed  
+- **API Interaction:** The bot passes authentication either via headers (e.g., `"Authorization":` token for Webex) or via query parameters (e.g., `"appid"`: api_key for OpenWeather). 
 
-Note: Relate your explanation directly to your code for higher grade. 
+- **JSON Processing:** The application parses incoming JSON packages using the `response.json()` method. To safely navigate nested data structures and prevent error exceptions when fields are missing, the bot relies on the dictionary `.get()` method, seen when extracting temperature data via `weather.get("main", {}).get("temp")`. 
+
 
 #### Security Considerations: (2 marks)
-- Check response status codes, Handling invalid or unexpected API responses, Avoiding excessive API calls
+- **Response Status Codes:** The application continuously validates API responses by checking if `response.status_code != 200:` and using `response.raise_for_status()` to catch HTTP errors.
 
 ---
 
 ###  MVC Design Pattern in AstroBot (3 Marks)
 
-Explain how the **Model–View–Controller (MVC)** pattern applies to your solution:
-Provide a short example based on your implementation
-
 | Component   | Description and Example (Relate to your Bot) |
 |------------|----------------------------------|
-| **Model**  |  |
-| **View**   |  |
-| **Controller** |  |
+| **Model**  | Description: Handles data logic, retrieval, and structuring. <br> <br> Example: Functions like get_weather(), get_iss_location(), and get_apod() act as the Model. They encapsulate the logic for fetching data from the APIs and returning dictionaries/lists without caring how it will be displayed. |
+| **View**   | Description: Represents user interface and how data is presented. <br> <br> Example: In this chat application, the Webex messaging interface is the View. The bot prepares the View by formatting data into human-readable text `(e.g., msg = f"Astronomy Picture of the Day\nTitle: {apod['title']}...")` before sending it to the user. |
+| **Controller** | Description: Dictates the flow between the user, View, and Model. <br> <br> Example: The `main()` function is the Controller. It monitors for user inputs (messages), parses the commands (e.g., `elif command == "/weather":`), calls the relevant function (`get_weather()`), and then passes the result back to the View via `send_message()`. |
 
 ---
 
