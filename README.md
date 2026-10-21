@@ -162,11 +162,16 @@ The servers include the Webex API servers, OpenWeatherMap servers, Open-Notify (
 
 Reflect on your AstroBot (400 words):
 
-- How effective is your bot in meeting the Astronomy Club’s needs?  
-- What design decisions worked well?  
-- What challenges did you face when integrating APIs?  
-- What security risks did you identify and how were they handled?  
-- How could your solution be improved in the future?  
+ The bots effectivness achieves exactly what it was tasked to do, giving structured responeses for each API including Messaging, Weather, ISS Location and Geocoding/Reverse Geocoding. A user can connect to the bot via the python script using thier own keys and input a valid command, each connecting to their respective API. The script then fetches the correct data, and outputs it for the user in an easily readable format. 
+ <br></br>
+ One decision I thought was impactful during development was having a clear structure when coding. Seperating each API's function into it's own lot of subroutines combined with clear commenting helped keep me on track rather than being confused on where I was and loosing focus. Another decision I found went well was packing together both geocoding styles into one command `/locate`. For the user, this eliminates another command to remember whilst also logically bunching relevant processes together (e.g: `/locate` can have two inputs, a City or coordiantes, if it sees coordinates, it will output a city/sea and vice versa if coordinates are entered.).
+ <br></br>
+ When introducing one of my extra API's, one of them returned an image (APOD API). This posed a problem because my current `send_message`  subroutine couldn't output an image link. This involved me looking at webex's forums finding a way to return message with an image attached and, after mutliple tries I was able to find that it can also parse a files parameter. A bit more configuring and I got it to send the Picture of the day from Nasa's Astronomy API. Also, another big issues was that the bot was responding to its own messages (e.g: The user typed `/help`, it would display the list of commands available, then it would go to execute any commands it could find within its own message). The way I managed to fix this was to exclude any responses where the email ended with `@webex.bot`, meaning it then only read messages other than itself. None of my commands also require another response after the inital message so no further action was needed.
+ <br></br>
+ One major security risk with any API programs is keys, and more importantly, keys being leaked online. This can be a huge risk financially as some API's will start to charge if you go over their rate limit (e.g. 1000 requests a day). Because of this, before releasing this repo to the public, I have gone and removed all hard-coded keys within the program. This stops anyone having access the keys and abusing them. Being aware of this, for my extended feature, I opted more for API's that didn't require an account and therefore another key.
+  <br></br>
+  To improve my design, I think starting from scracth rather than following some starter code would've helped me understand the program more interms of how its layed out and the different functions that went into the program faster, allowing more time for futher development. Another way I could've improved my program would be to use a different messaging service, as with webex, I encounted many minor problems that kept on stacking up eventually leading to bigger issues down the road.
+
 
 ---
 
