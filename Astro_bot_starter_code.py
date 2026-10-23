@@ -4,7 +4,6 @@
 import requests     # Here lists all the required libraries used within the project
 import json
 import time
-import datetime
 from datetime import datetime
 
 # =========================
@@ -188,7 +187,7 @@ def get_iss_location(api_key):                          # Function to get the cu
     lat = data["iss_position"]["latitude"]
     lon = data["iss_position"]["longitude"]
     timestamp = data["timestamp"]
-    usable_time = datetime.datetime.fromtimestamp(timestamp).strftime('%d-%m-%Y %H:%M:%S')      # Format timestamp to human-readable
+    usable_time = datetime.fromtimestamp(timestamp).strftime('%d-%m-%Y %H:%M:%S')      # Format timestamp to human-readable
     location = reverse_geocode(lat, lon, api_key)
     place = "Over Ocean / No Nearby City"
     if location:
