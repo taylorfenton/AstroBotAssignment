@@ -241,7 +241,7 @@ def main():
     token = get_webex_token()       # Get any relevant tokens
     rooms = get_rooms(token)
 
-    weather_key = get_api_key("Weather API key", "a3799325cd079312f575d330710f98ef")   
+    weather_key = get_api_key("Weather API key", "WEATHER_API_KEY")      # Get weather API key
 
     if not rooms:
         print("No Webex rooms found. Please ensure your bot is added to a space.")      # Check if rooms are available
